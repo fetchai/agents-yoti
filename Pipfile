@@ -22,3 +22,4 @@ mypy = "==0.761"
 
 [packages]
 aea = {extras = ["all"], version = "==0.7.3"}
+yoti = ">=2.13.0"
