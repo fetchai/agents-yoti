@@ -26,3 +26,9 @@ disable=C0103,C0201,C0301,C0302,C0330,W0105,W0107,W0707,W1202,W1203,R0902,R0913,
 # W0105: pointless-string-statement, # kept as no harm
 # W0107: unnecessary-pass, # kept as no harm
 # R0801: similar lines, # too granular
+
+[IMPORTS]
+ignored-modules=aiohttp,openapi_core
+
+[DESIGN]
+min-public-methods=1

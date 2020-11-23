@@ -17,34 +17,4 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This package contains the behaviours of the yoti_org skill."""
-
-from aea.skills.base import Behaviour
-
-
-class MyScaffoldBehaviour(Behaviour):
-    """This class scaffolds a behaviour."""
-
-    def setup(self) -> None:
-        """
-        Implement the setup.
-
-        :return: None
-        """
-        raise NotImplementedError
-
-    def act(self) -> None:
-        """
-        Implement the act.
-
-        :return: None
-        """
-        raise NotImplementedError
-
-    def teardown(self) -> None:
-        """
-        Implement the task teardown.
-
-        :return: None
-        """
-        raise NotImplementedError
+"""AEA connections folder."""

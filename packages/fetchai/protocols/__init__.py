@@ -17,10 +17,4 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This package contains the models of the yoti_org skill."""
-
-from aea.skills.base import Model
-
-
-class MyModel(Model):
-    """This class scaffolds a model."""
+"""AEA fetchai packages folder."""

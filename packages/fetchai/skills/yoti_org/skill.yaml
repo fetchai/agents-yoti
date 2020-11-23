@@ -11,24 +11,21 @@ fingerprint:
   handlers.py: QmTHd2YX941T76eS39SSdfiafXBYehL2oibugnVmmp4Tvy
   my_model.py: QmPaZ6G37Juk63mJj88nParaEp71XyURts8AmmX1axs24V
 fingerprint_ignore_patterns: []
+connections: []
 contracts: []
 protocols: []
 skills: []
-behaviours:
-  scaffold:
-    args:
-      foo: bar
-    class_name: MyScaffoldBehaviour
+behaviours: {}
 handlers:
-  scaffold:
-    args:
-      foo: bar
-    class_name: MyScaffoldHandler
+  http:
+    args: {}
+    class_name: HttpHandler
 models:
-  scaffold:
-    args:
-      foo: bar
-    class_name: MyModel
+  default_dialogues:
+    args: {}
+    class_name: DefaultDialogues
+  http_dialogues:
+    args: {}
+    class_name: HttpDialogues
 dependencies: {}
 is_abstract: false
-connections: []
