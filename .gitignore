@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 
 *.DS_Store
+
+# ignore agents
+yoti_org
+yoti_user
