@@ -30,6 +30,7 @@ from aea.protocols.base import Address, Message
 from aea.protocols.dialogue.base import Dialogue as BaseDialogue
 from aea.skills.base import Model
 
+# pylint: disable=import-error,no-name-in-module
 from packages.fetchai.protocols.default.dialogues import (
     DefaultDialogue as BaseDefaultDialogue,
 )
@@ -38,6 +39,9 @@ from packages.fetchai.protocols.default.dialogues import (
 )
 from packages.fetchai.protocols.http.dialogues import HttpDialogue as BaseHttpDialogue
 from packages.fetchai.protocols.http.dialogues import HttpDialogues as BaseHttpDialogues
+
+
+# pylint: enable=import-error,no-name-in-module
 
 
 DefaultDialogue = BaseDefaultDialogue

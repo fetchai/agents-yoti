@@ -24,8 +24,12 @@ from typing import cast
 from aea.protocols.base import Message
 from aea.skills.base import Handler
 
-from packages.fetchai.protocols.default.message import DefaultMessage
-from packages.fetchai.protocols.http.message import HttpMessage
+from packages.fetchai.protocols.default.message import (  # pylint: disable=import-error,no-name-in-module
+    DefaultMessage,
+)
+from packages.fetchai.protocols.http.message import (  # pylint: disable=import-error,no-name-in-module
+    HttpMessage,
+)
 from packages.fetchai.skills.yoti_org.dialogues import (
     DefaultDialogues,
     HttpDialogue,
