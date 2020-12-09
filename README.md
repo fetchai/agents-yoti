@@ -3,7 +3,7 @@
 A repo to explore integrating the AEA framework with Yoti (https://www.yoti.com)
 
 
-## Running the Demo:
+## Running the Demo (Fetch.ai Yoti Agent only):
 
 ``` bash
 aea -s fetch fetchai/yoti_org
@@ -15,11 +15,12 @@ Add the `.env` file:
 cp ../.env .env
 ```
 
+Run the Fetch.ai Yoti Agent:
 ``` bash
 aea -s run
 ```
 
-## Demo UML:
+## Full Demo UML:
 
 ![demo uml](./diagram.svg)
 
@@ -41,7 +42,7 @@ Alice's Agent->Bob's Agent: Transaction digest
 Bob's Agent->Alice's Agent: Purchased goods/services
  -->
 
-The Yoti flow follows:
+The Yoti flow follows (taken from Yoti Python SDK repo):
 ![yoti uml](https://github.com/getyoti/yoti-python-sdk/blob/master/login_flow.png)
 
 
@@ -68,3 +69,8 @@ make lint
 make static
 make security
 ```
+
+## Useful links re Yoti:
+
+- [Yoti Hub to manage App](https://hub.yoti.com/login)
+- [Yoti Python SDK](https://github.com/getyoti/yoti-python-sdk)
