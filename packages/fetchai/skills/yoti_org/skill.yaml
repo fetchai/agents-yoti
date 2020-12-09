@@ -2,7 +2,7 @@ name: yoti_org
 author: fetchai
 version: 0.1.0
 type: skill
-description: The scaffold skill is a scaffold for your own skill implementation.
+description: The yoti_org skill is a skill for a yoti registered organisation.
 license: Apache-2.0
 aea_version: '>=0.7.0, <0.8.0'
 fingerprint:
@@ -11,15 +11,22 @@ fingerprint:
   handlers.py: QmTHd2YX941T76eS39SSdfiafXBYehL2oibugnVmmp4Tvy
   my_model.py: QmPaZ6G37Juk63mJj88nParaEp71XyURts8AmmX1axs24V
 fingerprint_ignore_patterns: []
-connections: []
+connections:
+- fetchai/yoti:0.1.0
 contracts: []
-protocols: []
+protocols:
+- fetchai/default:0.9.0
+- fetchai/http:0.9.0
+- fetchai/yoti:0.1.0
 skills: []
 behaviours: {}
 handlers:
   http:
     args: {}
     class_name: HttpHandler
+  yoti:
+    args: {}
+    class_name: YotiHandler
 models:
   default_dialogues:
     args: {}
@@ -27,5 +34,13 @@ models:
   http_dialogues:
     args: {}
     class_name: HttpDialogues
+  parameters:
+    args:
+      yoti_scenario_id: null
+      yoti_client_sdk_id: null
+    class_name: Parameters
+  yoti_dialogues:
+    args: {}
+    class_name: YotiDialogues
 dependencies: {}
 is_abstract: false

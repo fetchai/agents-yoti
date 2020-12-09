@@ -2,8 +2,7 @@ name: yoti
 author: fetchai
 version: 0.1.0
 type: connection
-description: The scaffold connection provides a scaffold for a connection to be implemented
-  by the developer.
+description: The yoti connection wraps the Yoti Client SDK and translates to the yoti protocol.
 license: Apache-2.0
 aea_version: '>=0.7.0, <0.8.0'
 fingerprint:
@@ -12,11 +11,16 @@ fingerprint:
   readme.md: Qmdt71SaCCwAG1c24VktXDm4pxgUBiPMg4bWfUTiqorypf
 fingerprint_ignore_patterns: []
 connections: []
-protocols: []
-class_name: MyScaffoldConnection
+protocols:
+- fetchai/yoti:0.1.0
+class_name: YotiConnection
 config:
-  foo: bar
+  yoti_client_sdk_id: null
+  yoti_key_file_path: null
 excluded_protocols: []
-restricted_to_protocols: []
-dependencies: {}
+restricted_to_protocols:
+- fetchai/yoti:0.1.0
+dependencies:
+  yoti:
+    version: ==2.13.0
 is_abstract: false

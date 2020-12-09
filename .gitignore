@@ -132,4 +132,9 @@ dmypy.json
 
 # ignore agents
 yoti_org
+!packages/fetchai/skills/yoti_org
 yoti_user
+!packages/fetchai/skills/yoti_user
+
+# ignore keys
+yoti_keys

@@ -31,11 +31,9 @@ from typing import Any, Callable, Deque, Dict, List, Optional, cast
 from yoti_python_sdk import Client as YotiClient
 
 from aea.common import Address
-from aea.configurations.base import ConnectionConfig, PublicId
+from aea.configurations.base import PublicId
 from aea.connections.base import Connection, ConnectionStates
-from aea.crypto.wallet import CryptoStore
 from aea.helpers.async_utils import AsyncState
-from aea.identity.base import Identity
 from aea.mail.base import Envelope
 from aea.protocols.base import Message
 from aea.protocols.dialogue.base import Dialogue
@@ -175,8 +173,22 @@ class YotiRequestDispatcher(ABC):
             )
             return response
         try:
+            remember_me_id = activity_details.user_id
             profile = activity_details.profile
-            result = rgetattr(profile, message.dotted_path, message.args)
+            callable_ = rgetattr(profile, message.dotted_path, *message.args)
+            if len(message.args) != 0:
+                intermediate = callable_(*message.args)
+            else:
+                intermediate = callable_
+            result = {
+                "remember_me_id": remember_me_id,
+                "name": intermediate.name,
+                "value": intermediate.value,
+                "sources": ",".join([source.value for source in intermediate.sources]),
+                "verifiers": ",".join(
+                    [verifier.value for verifier in intermediate.verifiers]
+                ),
+            }
             response = cast(
                 YotiMessage,
                 dialogue.reply(
@@ -206,8 +218,8 @@ class YotiRequestDispatcher(ABC):
             dialogue.reply(
                 performative=YotiMessage.Performative.ERROR,
                 target_message=message,
-                code=500,
-                message=str(e),
+                error_code=500,
+                error_msg=str(e),
             ),
         )
         return response
@@ -218,12 +230,7 @@ class YotiConnection(Connection):
 
     connection_id = PublicId.from_str("fetchai/yoti:0.1.0")
 
-    def __init__(
-        self,
-        configuration: ConnectionConfig,
-        identity: Optional[Identity] = None,
-        crypto_store: Optional[CryptoStore] = None,
-    ):
+    def __init__(self, **kwargs):
         """
         Initialize a connection to an SDK or API.
 
@@ -231,13 +238,13 @@ class YotiConnection(Connection):
         :param crypto_store: object to access the connection crypto objects.
         :param identity: the identity object.
         """
-        super().__init__(  # pragma: no cover
-            configuration=configuration, crypto_store=crypto_store, identity=identity
-        )
+        super().__init__(**kwargs)  # pragma: no cover
         yoti_client_sdk_id = cast(
             Optional[str], self.configuration.config.get("yoti_client_sdk_id")
         )
-        yoti_key_file_path = cast(Optional[str], self.configuration.config.get("port"))
+        yoti_key_file_path = cast(
+            Optional[str], self.configuration.config.get("yoti_key_file_path")
+        )
         if yoti_client_sdk_id is None or yoti_key_file_path is None:
             raise ValueError("Missing configuration.")
         self._client = YotiClient(yoti_client_sdk_id, yoti_key_file_path)

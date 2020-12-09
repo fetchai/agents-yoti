@@ -19,52 +19,28 @@
 
 """This package contains the handlers of the yoti_org skill."""
 
-from typing import cast
+from typing import List, Optional, cast
+from urllib.parse import parse_qs, urlparse
 
 from aea.protocols.base import Message
 from aea.skills.base import Handler
 
-from packages.fetchai.protocols.default.message import (  # pylint: disable=import-error,no-name-in-module
-    DefaultMessage,
+from packages.fetchai.connections.yoti.connection import (
+    CONNECTION_ID as YOTI_CONNECTION_ID,
 )
 from packages.fetchai.protocols.http.message import (  # pylint: disable=import-error,no-name-in-module
     HttpMessage,
 )
+from packages.fetchai.protocols.yoti.message import (  # pylint: disable=import-error,no-name-in-module
+    YotiMessage,
+)
 from packages.fetchai.skills.yoti_org.dialogues import (
-    DefaultDialogues,
     HttpDialogue,
     HttpDialogues,
+    YotiDialogue,
+    YotiDialogues,
 )
-
-
-YOTI_BUTTON = """
-<head>
-  <script src="https://www.yoti.com/share/client/"></script>
-</head>
-
-<body>
-  <!-- Yoti element will be rendered inside this DOM node -->
-  <div id="yotiButton"></div>
-
-  <!-- This script snippet will also be required in your HTML body -->
-  <script>
-    window.Yoti.Share.init({
-      elements: [
-        {
-          domId: "yotiButton",
-          scenarioId: "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-          clientSdkId: "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-          type: "inline",
-          displayLearnMoreLink: true,
-          qr: {
-            title: " Scan with the Yoti app to verify your identity"
-          }
-        }
-      ]
-    });
-  </script>
-</body>
-"""
+from packages.fetchai.skills.yoti_org.parameters import Parameters
 
 
 class HttpHandler(Handler):
@@ -111,15 +87,6 @@ class HttpHandler(Handler):
         self.context.logger.info(
             "received invalid http message={}, unidentified dialogue.".format(http_msg)
         )
-        default_dialogues = cast(DefaultDialogues, self.context.default_dialogues)
-        default_msg, _ = default_dialogues.create(
-            counterparty=http_msg.sender,
-            performative=DefaultMessage.Performative.ERROR,
-            error_code=DefaultMessage.ErrorCode.INVALID_DIALOGUE,
-            error_msg="Invalid dialogue.",
-            error_data={"http_message": http_msg.encode()},
-        )
-        self.context.outbox.put_message(message=default_msg)
 
     def _handle_request(
         self, http_msg: HttpMessage, http_dialogue: HttpDialogue
@@ -149,17 +116,56 @@ class HttpHandler(Handler):
         :param http_dialogue: the http dialogue
         :return: None
         """
-        http_response = http_dialogue.reply(
-            performative=HttpMessage.Performative.RESPONSE,
-            target_message=http_msg,
-            version=http_msg.version,
-            status_code=200,
-            status_text="Success",
-            headers=http_msg.headers,
-            body=YOTI_BUTTON,
-        )
-        self.context.logger.info("responding with: {}".format(http_response))
-        self.context.outbox.put_message(message=http_response)
+        parsed = urlparse(http_msg.url)
+        query = parse_qs(parsed.query)
+        token = cast(List[Optional[str]], query.get("token", [None]))[0]
+        parameters = cast(Parameters, self.context.parameters)
+        if query == {}:
+            http_response = http_dialogue.reply(
+                performative=HttpMessage.Performative.RESPONSE,
+                target_message=http_msg,
+                version=http_msg.version,
+                status_code=200,
+                status_text="Success",
+                headers='Content-Type: text/html',
+                body=parameters.yoti_button,
+            )
+            self.context.logger.info("responding with: {}".format(http_response))
+            self.context.outbox.put_message(message=http_response)
+        elif token is None:
+            http_response = http_dialogue.reply(
+                performative=HttpMessage.Performative.RESPONSE,
+                target_message=http_msg,
+                version=http_msg.version,
+                status_code=200,
+                status_text="Success",
+                headers='Content-Type: text/html',
+                body=parameters.failure_html,
+            )
+            self.context.logger.info("responding with: {}".format(http_response))
+            self.context.outbox.put_message(message=http_response)
+        else:
+            http_response = http_dialogue.reply(
+                performative=HttpMessage.Performative.RESPONSE,
+                target_message=http_msg,
+                version=http_msg.version,
+                status_code=200,
+                status_text="Success",
+                headers='Content-Type: text/html',
+                body=parameters.success_html,
+            )
+            self.context.logger.info("responding with: {}".format(http_response))
+            self.context.outbox.put_message(message=http_response)
+            yoti_dialogues = cast(YotiDialogues, self.context.yoti_dialogues)
+            yoti_request, _ = yoti_dialogues.create(
+                performative=YotiMessage.Performative.GET_PROFILE,
+                counterparty=str(YOTI_CONNECTION_ID),
+                token=token,
+                dotted_path="get_attribute",
+                args=("age_over:18",),
+            )
+            self.context.logger.info(f"requesting profile from yoti with token={token}")
+            self.context.outbox.put_message(message=yoti_request)
 
     def _handle_invalid(
         self, http_msg: HttpMessage, http_dialogue: HttpDialogue
@@ -174,6 +180,108 @@ class HttpHandler(Handler):
         self.context.logger.warning(
             "cannot handle http message of performative={} in dialogue={}.".format(
                 http_msg.performative, http_dialogue
+            )
+        )
+
+    def teardown(self) -> None:
+        """
+        Implement the handler teardown.
+
+        :return: None
+        """
+        pass
+
+
+class YotiHandler(Handler):
+    """This class acts as a yoti handler."""
+
+    SUPPORTED_PROTOCOL = YotiMessage.protocol_id
+
+    def setup(self) -> None:
+        """
+        Implement the setup.
+
+        :return: None
+        """
+        pass
+
+    def handle(self, message: Message) -> None:
+        """
+        Implement the reaction to an envelope.
+
+        :param message: the message
+        :return: None
+        """
+        yoti_msg = cast(YotiMessage, message)
+
+        # recover dialogue
+        yoti_dialogues = cast(YotiDialogues, self.context.yoti_dialogues)
+        yoti_dialogue = cast(YotiDialogue, yoti_dialogues.update(yoti_msg))
+        if yoti_dialogue is None:
+            self._handle_unidentified_dialogue(yoti_msg)
+            return
+
+        # handle message
+        if yoti_msg.performative == YotiMessage.Performative.PROFILE:
+            self._handle_profile(yoti_msg, yoti_dialogue)
+        elif yoti_msg.performative == YotiMessage.Performative.ERROR:
+            self._handle_error(yoti_msg, yoti_dialogue)
+        else:
+            self._handle_invalid(yoti_msg, yoti_dialogue)
+
+    def _handle_unidentified_dialogue(self, yoti_msg: YotiMessage) -> None:
+        """
+        Handle an unidentified dialogue.
+
+        :param yoti_msg: the message
+        """
+        self.context.logger.info(
+            "received invalid yoti message={}, unidentified dialogue.".format(yoti_msg)
+        )
+
+    def _handle_profile(
+        self, yoti_msg: YotiMessage, yoti_dialogue: YotiDialogue
+    ) -> None:
+        """
+        Handle a yoti message of performative PROFILE.
+
+        :param yoti_msg: the yoti message
+        :param yoti_dialogue: the yoti dialogue
+        :return: None
+        """
+        self.context.logger.info(
+            "received yoti message={} in dialogue={}.".format(yoti_msg, yoti_dialogue)
+        )
+
+    def _handle_error(
+        self, yoti_msg: YotiMessage, yoti_dialogue: YotiDialogue
+    ) -> None:
+        """
+        Handle an invalid yoti message.
+
+        :param yoti_msg: the yoti message
+        :param yoti_dialogue: the yoti dialogue
+        :return: None
+        """
+        self.context.logger.warning(
+            "received yoti error message={} in dialogue={}.".format(
+                yoti_msg.error_msg, yoti_dialogue
+            )
+        )
+
+    def _handle_invalid(
+        self, yoti_msg: YotiMessage, yoti_dialogue: YotiDialogue
+    ) -> None:
+        """
+        Handle an invalid yoti message.
+
+        :param yoti_msg: the yoti message
+        :param yoti_dialogue: the yoti dialogue
+        :return: None
+        """
+        self.context.logger.warning(
+            "cannot handle yoti message of performative={} in dialogue={}.".format(
+                yoti_msg.performative, yoti_dialogue
             )
         )
 

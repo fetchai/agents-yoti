@@ -10,6 +10,7 @@ connections:
 - fetchai/http_server:0.12.0
 - fetchai/p2p_libp2p:0.12.0
 - fetchai/soef:0.12.0
+- fetchai/yoti:0.1.0
 contracts: []
 protocols:
 - fetchai/default:0.9.0
@@ -17,6 +18,7 @@ protocols:
 - fetchai/oef_search:0.10.0
 - fetchai/signing:0.7.0
 - fetchai/state_update:0.7.0
+- fetchai/yoti:0.1.0
 skills:
 - fetchai/error:0.9.0
 - fetchai/yoti_org:0.1.0
@@ -24,6 +26,7 @@ default_connection: fetchai/p2p_libp2p:any
 default_ledger: fetchai
 default_routing:
   fetchai/http:0.9.0: fetchai/http_server:0.12.0
+  fetchai/yoti:0.1.0: fetchai/yoti:0.1.0
   fetchai/oef_search:0.10.0: fetchai/soef:0.12.0
 connection_private_key_paths: {}
 private_key_paths: {}
@@ -36,3 +39,17 @@ public_id: fetchai/http_server:0.12.0
 type: connection
 config:
   api_spec_path: null
+---
+public_id: fetchai/yoti:0.1.0
+type: connection
+config:
+  yoti_client_sdk_id: ${YOTI_CLIENT_SDK_ID}
+  yoti_key_file_path: ${YOTI_KEY_FILE_PATH}
+---
+public_id: fetchai/yoti_org:0.1.0
+type: skill
+models:
+  parameters:
+    args:
+      yoti_scenario_id: ${YOTI_SCENARIO_ID}
+      yoti_client_sdk_id: ${YOTI_CLIENT_SDK_ID}
