@@ -20,9 +20,12 @@ Run the Fetch.ai Yoti Agent:
 aea -s run
 ```
 
+Url ```https://49c1c02c2189.ngrok.io/?address=test```
+
 ## Full Demo UML:
 
 ![demo uml](./diagram.svg)
+(Created using [this tool](https://bramp.github.io/js-sequence-diagrams/).)
 
 <!-- Note left of Alice's Agent: Alice wants\nsomething from Bob
 Alice's Agent->Bob's Agent: CFP

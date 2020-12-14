@@ -26,8 +26,12 @@ This module contains the classes required for dialogue management.
 - HttpDialogues: The dialogues class keeps track of all dialogues of type http.
 """
 
+from typing import Optional, Type
+
+from aea.exceptions import AEAEnforceError, enforce
 from aea.protocols.base import Address, Message
 from aea.protocols.dialogue.base import Dialogue as BaseDialogue
+from aea.protocols.dialogue.base import DialogueLabel as BaseDialogueLabel
 from aea.skills.base import Model
 
 # pylint: disable=import-error,no-name-in-module
@@ -41,6 +45,7 @@ from packages.fetchai.protocols.http.dialogues import HttpDialogue as BaseHttpDi
 from packages.fetchai.protocols.http.dialogues import HttpDialogues as BaseHttpDialogues
 from packages.fetchai.protocols.yoti.dialogues import YotiDialogue as BaseYotiDialogue
 from packages.fetchai.protocols.yoti.dialogues import YotiDialogues as BaseYotiDialogues
+from packages.fetchai.protocols.yoti.message import YotiMessage
 
 
 # pylint: enable=import-error,no-name-in-module
@@ -110,7 +115,46 @@ class HttpDialogues(Model, BaseHttpDialogues):
         )
 
 
-YotiDialogue = BaseYotiDialogue
+class YotiDialogue(BaseYotiDialogue):
+    """The dialogue class maintains state of a dialogue and manages it."""
+
+    def __init__(
+        self,
+        dialogue_label: BaseDialogueLabel,
+        self_address: Address,
+        role: BaseDialogue.Role,
+        message_class: Type[YotiMessage] = YotiMessage,
+    ) -> None:
+        """
+        Initialize a dialogue.
+
+        :param dialogue_label: the identifier of the dialogue
+        :param self_address: the address of the entity for whom this dialogue is maintained
+        :param role: the role of the agent this dialogue is maintained for
+
+        :return: None
+        """
+        BaseYotiDialogue.__init__(
+            self,
+            dialogue_label=dialogue_label,
+            self_address=self_address,
+            role=role,
+            message_class=message_class,
+        )
+        self._agent_address = None  # type: Optional[str]
+
+    @property
+    def agent_address(self) -> str:
+        """Get agent_address."""
+        if self._agent_address is None:
+            raise AEAEnforceError("agent_address not set!")
+        return self._agent_address
+
+    @agent_address.setter
+    def agent_address(self, agent_address: str) -> None:
+        """Set agent_address."""
+        enforce(self._agent_address is None, "agent_address already set!")
+        self._agent_address = agent_address
 
 
 class YotiDialogues(Model, BaseYotiDialogues):

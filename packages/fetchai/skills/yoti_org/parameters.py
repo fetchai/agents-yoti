@@ -19,6 +19,8 @@
 
 """This package contains the models of the yoti_user skill."""
 
+from typing import Dict
+
 from aea.skills.base import Model
 
 
@@ -53,13 +55,19 @@ YOTI_BUTTON_SCHEMA = """
 
 FAILURE = """
 <body>
-no token found
+no address or token found
 </body>
 """
 
 SUCCESS = """
 <body>
 token found
+</body>
+"""
+
+INFO = """
+<body>
+info: {info}
 </body>
 """
 
@@ -75,6 +83,12 @@ class Parameters(Model):
             raise ValueError("yoti_scenario_id or yoti_client_sdk_id not provided.")
         super().__init__(**kwargs)
         self._yoti_button = YOTI_BUTTON_SCHEMA.format(scenario_id=scenario_id, client_sdk_id=client_sdk_id)
+        self._db = {}  # temporary db
+
+    @property
+    def db(self) -> Dict[str, Dict[str, str]]:
+        """Get db."""
+        return self._db
 
     @property
     def yoti_button(self) -> bytes:
@@ -90,3 +104,8 @@ class Parameters(Model):
     def failure_html(self):
         """Get success html."""
         return FAILURE.encode("utf-8")
+
+    @staticmethod
+    def info_html(info: Dict[str, str]):
+        """Get no_address html."""
+        return INFO.format(info=info).encode("utf-8")
