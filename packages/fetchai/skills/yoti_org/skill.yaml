@@ -4,7 +4,7 @@ version: 0.1.0
 type: skill
 description: The yoti_org skill is a skill for a yoti registered organisation.
 license: Apache-2.0
-aea_version: '>=0.7.0, <0.8.0'
+aea_version: '>=0.8.0, <0.9.0'
 fingerprint:
   __init__.py: QmbCCLsoCggTXVAgSLve77VSZUWdxh5DjD1NzkuFkZXnLE
   behaviours.py: QmNgDDAmBzWBeBF7e5gUCny38kdqVVfpvHGaAZVZcMtm9Q
@@ -15,8 +15,8 @@ connections:
 - fetchai/yoti:0.1.0
 contracts: []
 protocols:
-- fetchai/default:0.9.0
-- fetchai/http:0.9.0
+- fetchai/default:0.10.0
+- fetchai/http:0.10.0
 - fetchai/yoti:0.1.0
 skills: []
 behaviours: {}

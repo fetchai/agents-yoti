@@ -137,4 +137,5 @@ yoti_user
 !packages/fetchai/skills/yoti_user
 
 # ignore keys
-yoti_keys
+yoti_keys/*
+!yoti_keys/.gitkeep

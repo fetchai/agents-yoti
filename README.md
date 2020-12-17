@@ -5,9 +5,21 @@ A repo to explore integrating the AEA framework with Yoti (https://www.yoti.com)
 
 ## Running the Demo (Fetch.ai Yoti Agent only):
 
+Create a clean virtual env
+``` bash
+make new_env
+pipenv shell
+make install_env
+```
+
+Add the Yoti SDK `keys` folder in the folder called `yoti_keys`.
+
+Fetch the AEA and enter it:
 ``` bash
 aea -s fetch fetchai/yoti_org
 cd yoti_org
+aea -s install
+aea -s build
 ```
 
 Add the `.env` file:
@@ -15,12 +27,17 @@ Add the `.env` file:
 cp ../.env .env
 ```
 
+Temporarily, to account for a bug in `.env` file resolution, do:
+``` bash
+cp ../packages/fetchai/agents/yoti_org/aea-config.yaml aea-config.yaml
+```
+
 Run the Fetch.ai Yoti Agent:
 ``` bash
 aea -s run
 ```
 
-Url ```https://49c1c02c2189.ngrok.io/?address=test```
+Url ```https://{CALL_BACK_URL_HERE}/?address=test```
 
 ## Full Demo UML:
 
