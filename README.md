@@ -14,6 +14,13 @@ make install_env
 
 Add the Yoti SDK `keys` folder in the folder called `yoti_keys`.
 
+Add an environment file `.env` with the following content:
+```
+export YOTI_CLIENT_SDK_ID=ADD_HERE
+export YOTI_KEY_FILE_PATH=ADD_HERE
+export YOTI_SCENARIO_ID=ADD_HERE
+```
+
 Fetch the AEA and enter it:
 ``` bash
 aea -s fetch fetchai/yoti_org
@@ -37,7 +44,13 @@ Run the Fetch.ai Yoti Agent:
 aea -s run
 ```
 
-Url ```https://{CALL_BACK_URL_HERE}/?address=test```
+Visit this `https://{NGROK_URL_HERE}/?address=test` in your browser, then connect your Yoti, then wait for `token found`, then visit same URL again to see data received.
+
+Missing for full demo (~1 full day work):
+- skills for communication between yoti agent and alice and bob agents
+- protocol for communication between yoti agent and alice and bob agents
+
+Alice and Bob agents can be taken from this demo for instance: https://docs.fetch.ai/aea/weather-skills/
 
 ## Full Demo UML:
 
