@@ -61,11 +61,8 @@ new_env: clean
 	then\
 		pipenv --rm;\
 		pipenv --python 3.7;\
-		echo "Enter clean virtual environment now: 'pipenv shell'.";\
+		pipenv install --dev --skip-lock;\
+		echo "Enter virtual environment with installed dependencies now: 'pipenv shell'.";\
 	else\
 		echo "In a virtual environment! Exit first: 'exit'.";\
 	fi
-
-.PHONY: install_env
-install_env:
-	pipenv install --dev --skip-lock

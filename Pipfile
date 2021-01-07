@@ -21,4 +21,4 @@ isort = "==5.5.2"
 mypy = "==0.761"
 
 [packages]
-aea = {extras = ["all"], version = "==0.8.0"}
+aea = {extras = ["all"], version = "==0.9.0"}

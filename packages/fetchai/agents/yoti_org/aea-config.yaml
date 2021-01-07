@@ -3,31 +3,30 @@ author: fetchai
 version: 0.1.0
 license: Apache-2.0
 description: An AEA to represent an organisation registered with Yoti
-aea_version: '>=0.8.0, <0.9.0'
+aea_version: '>=0.9.0, <0.10.0'
 fingerprint: {}
 fingerprint_ignore_patterns: []
 connections:
-- fetchai/http_server:0.14.0
-- fetchai/p2p_libp2p:0.13.0
-- fetchai/soef:0.14.0
+- fetchai/http_server:0.15.0
+- fetchai/soef:0.15.0
 - fetchai/yoti:0.1.0
 contracts: []
 protocols:
-- fetchai/default:0.10.0
-- fetchai/http:0.10.0
-- fetchai/oef_search:0.11.0
-- fetchai/signing:0.8.0
-- fetchai/state_update:0.8.0
+- fetchai/default:0.11.0
+- fetchai/http:0.11.0
+- fetchai/oef_search:0.12.0
+- fetchai/signing:0.9.0
+- fetchai/state_update:0.9.0
 - fetchai/yoti:0.1.0
 skills:
-- fetchai/error:0.10.0
+- fetchai/error:0.11.0
 - fetchai/yoti_org:0.1.0
-default_connection: fetchai/p2p_libp2p:any
+default_connection: fetchai/soef:any
 default_ledger: fetchai
 default_routing:
-  fetchai/http:0.10.0: fetchai/http_server:0.14.0
+  fetchai/http:0.10.0: fetchai/http_server:0.15.0
   fetchai/yoti:0.1.0: fetchai/yoti:0.1.0
-  fetchai/oef_search:0.11.0: fetchai/soef:0.14.0
+  fetchai/oef_search:0.11.0: fetchai/soef:0.15.0
 connection_private_key_paths: {}
 private_key_paths: {}
 logging_config:
@@ -35,7 +34,7 @@ logging_config:
   version: 1
 registry_path: ../packages
 ---
-public_id: fetchai/http_server:0.14.0
+public_id: fetchai/http_server:0.15.0
 type: connection
 config:
   api_spec_path: null
