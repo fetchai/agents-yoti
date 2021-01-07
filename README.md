@@ -74,7 +74,7 @@ The Yoti flow follows (taken from Yoti Python SDK repo):
 
 ## Development
 
-Install a new development environment with
+Install a new development environment and dependencies with
 ``` bash
 make new_env
 ```
@@ -82,11 +82,6 @@ make new_env
 Enter shell
 ``` bash
 pipenv shell
-```
-
-Install development dependencies
-``` bash
-make install_env
 ```
 
 Some linters are available
