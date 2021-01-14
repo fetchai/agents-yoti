@@ -3,7 +3,7 @@
 A repo to explore integrating the AEA framework with Yoti (https://www.yoti.com)
 
 
-## Running the Demo (Fetch.ai Yoti Agent only):
+## Running the Demo (Fetch.ai-Yoti Agent only):
 
 Create a clean virtual env with all dependencies installed
 ``` bash
@@ -32,7 +32,7 @@ Add the `.env` file:
 cp ../.env .env
 ```
 
-Run the Fetch.ai Yoti agent:
+Run the Fetch.ai-Yoti agent:
 ``` bash
 aea run
 ```
@@ -40,10 +40,10 @@ aea run
 Visit this `https://{NGROK_URL_HERE}/?address=test` in your browser, then connect your Yoti, then wait for `token found`, then visit same URL again to see data received.
 
 Missing for full demo (~1 full day work):
-- skills for communication between Fetch.ai Yoti agent and Alice and Bob agents
-- protocol for communication between Fetch.ai Yoti agent and Alice and Bob agents
+- skills for communication between Fetch.ai-Yoti agent and Trader and Decentralized Exchange agents
+- protocol for communication between Fetch.ai-Yoti agent and Trader and Decentralized Exchange agents
 
-Alice and Bob agents can be taken from this demo for instance: https://docs.fetch.ai/aea/weather-skills/
+Trader and Decentralized Exchange can be taken from this demo for instance: https://docs.fetch.ai/aea/generic-skills/
 
 ## Full Demo UML:
 
