@@ -109,6 +109,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env_age
+.env_identity
 
 # Spyder project settings
 .spyderproject

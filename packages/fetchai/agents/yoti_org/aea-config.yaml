@@ -52,3 +52,4 @@ models:
     args:
       yoti_scenario_id: ${YOTI_SCENARIO_ID}
       yoti_client_sdk_id: ${YOTI_CLIENT_SDK_ID}
+      yoti_scenario_name: ${YOTI_SCENARIO_NAME}

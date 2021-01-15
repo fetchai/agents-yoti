@@ -8,8 +8,8 @@ aea_version: '>=0.9.0, <0.10.0'
 fingerprint:
   __init__.py: QmUkW82Uu8Bzgp83ERqTS9QH6GixWi4p4FXpGRFZakFPZE
   dialogues.py: QmNj2JDfZ1C1duvpz2Kp9L2UhiTfFmMEUBGKCY9Qc7QYJQ
-  handlers.py: QmdHRXFn733wyukmbiJcVQEWUcUeofpJxddfqXc2dP7vw7
-  parameters.py: QmaBpfa2Hb9hPUSiZMmGGZ5miqbkUtsHs3Dd8FbW3EakYZ
+  handlers.py: QmZmGNsTS99onP5Qxpd1c86g4jBpN97DFxmcnyMFufnRsF
+  parameters.py: Qmeu2xdNBNghd1d2efXHskriBMF2tFdvPqywNXPEzteqR1
 fingerprint_ignore_patterns: []
 connections:
 - fetchai/yoti:0.1.0
@@ -38,6 +38,7 @@ models:
     args:
       yoti_client_sdk_id: null
       yoti_scenario_id: null
+      yoti_scenario_name: null
     class_name: Parameters
   yoti_dialogues:
     args: {}

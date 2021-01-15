@@ -26,19 +26,25 @@ You will need to create Yoti credentials and register a scenario with Yoti.
 
 ### Running the Fetch.ai-Yoti Agent
 
-Create a clean virtual env with all dependencies installed
+Create a clean virtual env with all dependencies installed:
 ``` bash
 make new_env
 pipenv shell
 ```
 
-Add the Yoti SDK `keys` folder in the folder called `yoti_keys`.
+Run ngrok on port 8000:
+``` bash
+./ngrok http 8000
+```
+
+Make sure the ngrok url matches the one registered on Yoti Hub. Add the Yoti SDK `keys` folder in the folder called `yoti_keys`.
 
 Add an environment file `.env` with the following content:
 ```
-export YOTI_CLIENT_SDK_ID=ADD_HERE
-export YOTI_KEY_FILE_PATH=ADD_HERE
-export YOTI_SCENARIO_ID=ADD_HERE
+export YOTI_CLIENT_SDK_ID=ADD_YOUR_CLIENT_SDK_ID_HERE
+export YOTI_KEY_FILE_PATH=ADD_YOUR_KEY_FILE_PATH_HERE
+export YOTI_SCENARIO_ID=ADD_YOUR_SCENARIO_ID_HERE
+export YOTI_SCENARIO_NAME=identity
 ```
 
 Fetch the AEA and enter it:
@@ -89,3 +95,9 @@ make lint
 make static
 make security
 ```
+
+To fingerpring packages after modifying them use
+``` bash
+aea fingerprint by-path PATH
+```
+

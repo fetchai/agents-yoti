@@ -9,7 +9,7 @@ aea_version: '>=0.9.0, <0.10.0'
 fingerprint:
   README.md: QmVZAUteCQV1So2kecMvC95T3EtP1mqzXVF4WafjF6iZCL
   __init__.py: QmZvYZ5ECcWwqiNGh8qNTg735wu51HqaLxTSifUxkQ4KGj
-  connection.py: QmXqp6GVJcrfFyHupBnrymVqKNmk1xMgarKbBBi3EVm6QN
+  connection.py: QmZ7o4km7ALsKF6E82Wiw23R2UeLc5pVkHvFAiko3E5yAF
 fingerprint_ignore_patterns: []
 connections: []
 protocols:
@@ -23,5 +23,5 @@ restricted_to_protocols:
 - fetchai/yoti:0.1.0
 dependencies:
   yoti:
-    version: ==2.13.0
+    version: ==2.14.0
 is_abstract: false

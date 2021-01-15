@@ -21,6 +21,7 @@
 
 import asyncio
 import functools
+import json
 from abc import ABC
 from asyncio import Task
 from collections import deque
@@ -175,20 +176,31 @@ class YotiRequestDispatcher(ABC):
         try:
             remember_me_id = activity_details.user_id
             profile = activity_details.profile
-            callable_ = rgetattr(profile, message.dotted_path, *message.args)
-            if len(message.args) != 0:
-                intermediate = callable_(*message.args)
+            if message.dotted_path == "":
+                attributes = {
+                    key: value.value
+                    if isinstance(value.value, str)
+                    else json.dumps(value.value)
+                    for key, value in profile.attributes.items()
+                }
+                result = {"remember_me_id": remember_me_id, **attributes}
             else:
-                intermediate = callable_
-            result = {
-                "remember_me_id": remember_me_id,
-                "name": intermediate.name,
-                "value": intermediate.value,
-                "sources": ",".join([source.value for source in intermediate.sources]),
-                "verifiers": ",".join(
-                    [verifier.value for verifier in intermediate.verifiers]
-                ),
-            }
+                callable_ = rgetattr(profile, message.dotted_path, *message.args)
+                if len(message.args) != 0:
+                    intermediate = callable_(*message.args)
+                else:
+                    intermediate = callable_
+                result = {
+                    "remember_me_id": remember_me_id,
+                    "name": intermediate.name,
+                    "value": intermediate.value,
+                    "sources": ",".join(
+                        [source.value for source in intermediate.sources]
+                    ),
+                    "verifiers": ",".join(
+                        [verifier.value for verifier in intermediate.verifiers]
+                    ),
+                }
             response = cast(
                 YotiMessage,
                 dialogue.reply(

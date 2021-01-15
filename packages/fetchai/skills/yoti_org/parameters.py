@@ -19,7 +19,7 @@
 
 """This package contains the models of the yoti_user skill."""
 
-from typing import Dict
+from typing import Dict, Tuple
 
 from aea.skills.base import Model
 
@@ -44,7 +44,7 @@ YOTI_BUTTON_SCHEMA = """
           type: "inline",
           displayLearnMoreLink: true,
           qr: {{
-            title: " Scan with the Yoti app to verify your identity and"
+            title: "Scan with the Yoti app to verify your {scenario_name}"
           }}
         }}
       ]
@@ -71,6 +71,8 @@ info: {info}
 </body>
 """
 
+VALID_SCENARIO_NAMES = ["age", "identity"]
+
 
 class Parameters(Model):
     """This class represents a parameters model."""
@@ -78,12 +80,20 @@ class Parameters(Model):
     def __init__(self, **kwargs):
         """Initialize the parameters."""
         scenario_id = kwargs.pop("yoti_scenario_id")
+        if scenario_id is None:
+            raise ValueError("yoti_scenario_id not provided.")
         client_sdk_id = kwargs.pop("yoti_client_sdk_id")
-        if scenario_id is None or client_sdk_id is None:
-            raise ValueError("yoti_scenario_id or yoti_client_sdk_id not provided.")
+        if client_sdk_id is None:
+            raise ValueError("yoti_client_sdk_id not provided.")
+        scenario_name = kwargs.pop("yoti_scenario_name")
+        if scenario_name is None:
+            raise ValueError("yoti_scenario_name not provided.")
+        if scenario_name not in VALID_SCENARIO_NAMES:
+            raise ValueError(f"Got yoti_scenario_name={scenario_name}, expected one of {VALID_SCENARIO_NAMES}.")
         super().__init__(**kwargs)
-        self._yoti_button = YOTI_BUTTON_SCHEMA.format(scenario_id=scenario_id, client_sdk_id=client_sdk_id)
-        self._db = {}  # temporary db
+        self._yoti_button = YOTI_BUTTON_SCHEMA.format(scenario_id=scenario_id, client_sdk_id=client_sdk_id, scenario_name=scenario_name)
+        self._scenario_name = scenario_name
+        self._db = {}  # temporary db mock
 
     @property
     def db(self) -> Dict[str, Dict[str, str]]:
@@ -96,16 +106,31 @@ class Parameters(Model):
         return self._yoti_button.encode("utf-8")
 
     @property
-    def success_html(self):
+    def success_html(self) -> bytes:
         """Get success html."""
         return SUCCESS.encode("utf-8")
 
     @property
-    def failure_html(self):
+    def failure_html(self) -> bytes:
         """Get success html."""
         return FAILURE.encode("utf-8")
 
     @staticmethod
-    def info_html(info: Dict[str, str]):
+    def info_html(info: Dict[str, str]) -> bytes:
         """Get no_address html."""
         return INFO.format(info=info).encode("utf-8")
+
+    @property
+    def scenario_name(self) -> str:
+        """Get scenario name."""
+        return self._scenario_name
+
+    @property
+    def yoti_sdk_dotted_path(self) -> str:
+        """Get dotted path for yoti sdk call."""
+        return "get_attribute" if self.scenario_name == "age" else ""
+
+    @property
+    def yoti_sdk_args(self) -> Tuple[str, ...]:
+        """Get args for yoti sdk call."""
+        return ("age_over:18",) if self.scenario_name == "age" else ("",)

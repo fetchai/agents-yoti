@@ -43,6 +43,10 @@ from packages.fetchai.skills.yoti_org.dialogues import (
 from packages.fetchai.skills.yoti_org.parameters import Parameters
 
 
+STATUS_TEXT = "Success"
+HEADERS = 'Content-Type: text/html'
+
+
 class HttpHandler(Handler):
     """This class acts as a http handler."""
 
@@ -106,7 +110,7 @@ class HttpHandler(Handler):
         if http_msg.method == "get":
             self._handle_get(http_msg, http_dialogue)
         else:
-            self.context.logger.info(f"Unknown request type={http_msg.method}")
+            self.context.logger.info(f"No handler for request type={http_msg.method}")
 
     def _handle_get(self, http_msg: HttpMessage, http_dialogue: HttpDialogue) -> None:
         """
@@ -120,8 +124,8 @@ class HttpHandler(Handler):
         query = parse_qs(parsed.query)
         address = cast(List[Optional[str]], query.get("address", [None]))[0]
         token = cast(List[Optional[str]], query.get("token", [None]))[0]
-        yoti_redirect = 'yoti' in parsed.path
         parameters = cast(Parameters, self.context.parameters)
+        yoti_redirect = parameters.scenario_name in parsed.path
         info = parameters.db.get(address, None) if address is not None else None
         if not yoti_redirect and address is not None and info is None:
             http_response = http_dialogue.reply(
@@ -129,11 +133,11 @@ class HttpHandler(Handler):
                 target_message=http_msg,
                 version=http_msg.version,
                 status_code=200,
-                status_text="Success",
-                headers='Content-Type: text/html',
+                status_text=STATUS_TEXT,
+                headers=HEADERS,
                 body=parameters.yoti_button,
             )
-            self.context.logger.info("responding with: {}".format(http_response))
+            self.context.logger.info("responding with button html: {}".format(http_response))
             self.context.outbox.put_message(message=http_response)
         elif not yoti_redirect and address is not None and info is not None:
             http_response = http_dialogue.reply(
@@ -141,11 +145,11 @@ class HttpHandler(Handler):
                 target_message=http_msg,
                 version=http_msg.version,
                 status_code=200,
-                status_text="Success",
-                headers='Content-Type: text/html',
+                status_text=STATUS_TEXT,
+                headers=HEADERS,
                 body=parameters.info_html(info),
             )
-            self.context.logger.info("responding with: {}".format(http_response))
+            self.context.logger.info("responding with info html: {}".format(http_response))
             self.context.outbox.put_message(message=http_response)
         elif yoti_redirect and address is not None and token is not None:
             http_response = http_dialogue.reply(
@@ -153,19 +157,19 @@ class HttpHandler(Handler):
                 target_message=http_msg,
                 version=http_msg.version,
                 status_code=200,
-                status_text="Success",
-                headers='Content-Type: text/html',
+                status_text=STATUS_TEXT,
+                headers=HEADERS,
                 body=parameters.success_html,
             )
-            self.context.logger.info("responding with: {}".format(http_response))
+            self.context.logger.info("responding with success html: {}".format(http_response))
             self.context.outbox.put_message(message=http_response)
             yoti_dialogues = cast(YotiDialogues, self.context.yoti_dialogues)
             yoti_request, yoti_dialogue = yoti_dialogues.create(
                 performative=YotiMessage.Performative.GET_PROFILE,
                 counterparty=str(YOTI_CONNECTION_ID),
                 token=token,
-                dotted_path="get_attribute",
-                args=("age_over:18",),
+                dotted_path=parameters.yoti_sdk_dotted_path,
+                args=parameters.yoti_sdk_args,
             )
             yoti_dialogue = cast(YotiDialogue, yoti_dialogue)
             yoti_dialogue.agent_address = address
@@ -177,11 +181,11 @@ class HttpHandler(Handler):
                 target_message=http_msg,
                 version=http_msg.version,
                 status_code=200,
-                status_text="Success",
-                headers='Content-Type: text/html',
+                status_text=STATUS_TEXT,
+                headers=HEADERS,
                 body=parameters.failure_html,
             )
-            self.context.logger.info("responding with: {}".format(http_response))
+            self.context.logger.info("responding with failure html: {}".format(http_response))
             self.context.outbox.put_message(message=http_response)
 
     def _handle_invalid(
