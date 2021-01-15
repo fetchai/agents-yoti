@@ -1,9 +1,30 @@
 # agents-yoti
 
-A repo to explore integrating the AEA framework with Yoti (https://www.yoti.com)
+A repo to explore integrating the [AEA framework](https://docs.fetch.ai/aea) with [Yoti](https://www.yoti.com).
 
+## Full Demo - Diagrams:
+
+The Yoti-Fetch.ai solution provides Fetch.ai’s autonomous economic agents (that act on behalf of a person) the ability to prove their owner’s identity to another agent (or to a range of stakeholders) in a fully automated scenario such as a DeFi trading environment. 
+
+Here we demonstrate combining Fetch.ai’s autonomous economic agents framework with the reusable Yoti Digital ID to in the future facilitate KYC/AML compliant DeFi trading whilst enabling the core principles of DeFi (no centralised exchange) to be maintained.  
+
+Autonomous economic agents can encapsulate and automate complex interactions with on-chain DeFi smart contracts, as for instance in an algorithmic trading bot. Economic agents can act as well on behalf of human traders. In both cases Fetch.ai agents will be able to securely prove or anchor their verified identity to a public key / wallet address or a series of transactional events without a centralised third party controlling such.
+
+The diagram below describes the interactions between agents and users:
+![demo uml](./diagram.jpg)
+
+The diagram below describes the user's login process with Yoti and the flow between the Yoti-Fetch.ai agent using the [Yoti Python SDK](https://github.com/getyoti/yoti-python-sdk) and the Yoti servers:
+![yoti uml](./yoti.png)
 
 ## Running the Demo (Fetch.ai-Yoti Agent only):
+
+### Setting up with Yoti
+
+Please visit the [Getting Started Page](https://developers.yoti.com/yoti-app/getting-started) and [Yoti Hub](https://hub.yoti.com/login) to setup with Yoti.
+
+You will need to create Yoti credentials and register a scenario with Yoti.
+
+### Running the Fetch.ai-Yoti Agent
 
 Create a clean virtual env with all dependencies installed
 ``` bash
@@ -39,18 +60,15 @@ aea run
 
 Visit this `https://{NGROK_URL_HERE}/?address=test` in your browser, then connect your Yoti, then wait for `token found`, then visit same URL again to see data received.
 
-Missing for full demo (~1 full day work):
-- skills for communication between Fetch.ai-Yoti agent and Trader and Decentralized Exchange agents
+### Future Work
+
+Currently missing for full demo (roughly one full day work) are:
+
 - protocol for communication between Fetch.ai-Yoti agent and Trader and Decentralized Exchange agents
 
+- skills for handling messages between Fetch.ai-Yoti agent and Trader and Decentralized Exchange agents
+
 Trader and Decentralized Exchange can be taken from this demo for instance: https://docs.fetch.ai/aea/generic-skills/
-
-## Full Demo UML:
-
-![demo uml](./diagram.jpg)
-
-The Yoti flow follows (taken from Yoti Python SDK repo):
-![yoti uml](https://github.com/getyoti/yoti-python-sdk/blob/master/login_flow.png)
 
 
 ## Development
@@ -71,8 +89,3 @@ make lint
 make static
 make security
 ```
-
-## Useful links re Yoti:
-
-- [Yoti Hub to manage App](https://hub.yoti.com/login)
-- [Yoti Python SDK](https://github.com/getyoti/yoti-python-sdk)
